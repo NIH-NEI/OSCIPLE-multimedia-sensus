@@ -1,6 +1,7 @@
 # !/usr/bin/python
 
-path = "/Volumes/LaCie/Ingest/"
+# path = "/Volumes/LaCie/Ingest/"
+path = "/Volumes/nickpiegari/Desktop/dv concatenation test/"
 
 import os, csv, ffmpeg
 
