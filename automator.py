@@ -1,4 +1,4 @@
-import gspread, datetime, subprocess, requests
+import gspread, datetime, subprocess, requests, serial
 from termcolor import colored
 from gspread_formatting import *
 from oauth2client.service_account import ServiceAccountCredentials
@@ -100,3 +100,15 @@ while True:
 				updateMedia(ws, cell, "Recording", "DVCPRO (FireWire) deck", format_recording, captureDate)
 			elif cmd == "DVCA-IN":
 				updateMedia(ws, cell, "Recording", "DVCPRO (analog) deck", format_recording, captureDate)
+			elif cmd == "PRINT":
+				try:
+					ser = serial.Serial('/dev/tty.usbserial-10')  # open serial port
+					for i in range(0, len(ws.row_values(cell.row))):
+						rowProperties = ws.row_values(1)
+						rowValues = ws.row_values(cell.row)
+						ser.write(bytearray("{property}: {value}\n".format(property=rowProperties[i], value=rowValues[i]), "ascii", "ignore"))     # write a string
+					ser.write(b"\n\n\n\n")
+					ser.close()             # close port
+				except:
+					print (colored("Error: Printer not available", "red"))
+					subprocess.Popen(["afplay", "chime-error.wav"])
