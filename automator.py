@@ -1,4 +1,4 @@
-import gspread, datetime, subprocess, requests, serial
+import gspread, datetime, subprocess, requests, serial, traceback
 from termcolor import colored
 from gspread_formatting import *
 from oauth2client.service_account import ServiceAccountCredentials
@@ -42,7 +42,24 @@ def updateMedia(ws, cell, stageName, location, format, captureDate=""):
 	format_cell_range(ws, rowcolrange, format)
 	print (colored("Updated {media} to {stageName}, {location}".format(media=cell.value, stageName=stageName, location=location), "green"))
 	subprocess.Popen(["afplay", "chime-success.wav"])
-    
+ 
+ 
+def lcd(line1, line2, color=""):
+	try:
+		ser = serial.Serial("/dev/tty.usbmodem1101", baudrate=115200)  # open serial port
+		if color != "":
+			ser.write("lc{color}]\n".format(color=color))
+
+		l1 = line1 + (" " * (16 - len(line1)))
+		ser.write("lm1{line}".format(l1))
+		l2 = line2 + (" " * (16 - len(line2)))
+		ser.write("lm2{line}".format(l2))
+		ser.close()             # close port
+	except:
+		pass
+		# traceback.print_exc()
+		# print (colored("Error: Arduino not available", "red"))
+	
 
 cell = None
 while True:
@@ -51,6 +68,7 @@ while True:
 	commandHistory.append([cmd, datetime.datetime.now()])
  
 	if cmd[0:4] == "HS-2":
+		lcd(cmd, "", "y")
 		if cmd[5:7] == "ST":
 			if cell == None:
 				print (colored("Error: No media selected", "red"))
@@ -93,16 +111,20 @@ while True:
 			captureDate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 			if cmd == "BC-IN":
 				updateMedia(ws, cell, "Recording", "Betacam deck", format_recording, captureDate)
-				print (requests.get("http://localhost:8081/mode/go"))
+				# print (requests.get("http://localhost:8081/mode/go"))
 			elif cmd == "UM-IN":
 				updateMedia(ws, cell, "Recording", "U-Matic deck", format_recording, captureDate)
 			elif cmd == "DVCFW-IN":
 				updateMedia(ws, cell, "Recording", "DVCPRO (FireWire) deck", format_recording, captureDate)
 			elif cmd == "DVCA-IN":
 				updateMedia(ws, cell, "Recording", "DVCPRO (analog) deck", format_recording, captureDate)
+			elif cmd == "MDV-IN":
+				updateMedia(ws, cell, "Recording", "MiniDV deck", format_recording, captureDate)
+			elif cmd == "BAKE":
+				updateMedia(ws, cell, "Baking", "", format_tapesWithProblems, captureDate)
 			elif cmd == "PRINT":
 				try:
-					ser = serial.Serial('/dev/tty.usbserial-10')  # open serial port
+					ser = serial.Serial('/dev/tty.usbserial-120')  # open serial port
 					for i in range(0, len(ws.row_values(cell.row))):
 						rowProperties = ws.row_values(1)
 						rowValues = ws.row_values(cell.row)

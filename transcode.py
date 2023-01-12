@@ -1,6 +1,8 @@
 # !/usr/bin/python
 
-path = "/Volumes/LaCie/Ingest/"
+path = "/volumes/One Touch/ingest history 2 pre qc/betacam trimmed"
+# path = "/volumes/One Touch/ingest history 2 pre qc/betacam sp trimmed"
+# path = "/volumes/One Touch/ingest history 2 pre qc/u-matic trimmed"
 
 import ffmpeg, datetime
 import pandas as pd

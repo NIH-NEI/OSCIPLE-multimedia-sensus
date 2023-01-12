@@ -1,13 +1,14 @@
 # !/usr/bin/python
 
-path = "/Volumes/LaCie/Ingest/"
-# path = "/Volumes/nickpiegari/Desktop/dv concatenation test/"
+# path = "/volumes/One Touch/ingest history 2 pre qc/betacam trimmed"
+path = "/volumes/One Touch/ingest history 2 pre qc/betacam sp trimmed"
+# path = "/volumes/One Touch/ingest history 2 pre qc/u-matic trimmed"
 
 import os, csv, ffmpeg
 
-videoformats = ["dv"]
+videoformats = ["mov"]
 
-with open("videolist.csv", "w") as csvfile:
+with open("videolist-betacam-sp.csv", "w") as csvfile:
 	rofl = csv.writer(csvfile)
 	rofl.writerow(["filename", "filesize", "job", "status", "convertdate"])
 	for root, dirs, files in os.walk(path, topdown=False):
