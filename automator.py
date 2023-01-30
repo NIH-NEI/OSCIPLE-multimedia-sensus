@@ -16,7 +16,9 @@ formatsToSheets = {"BC": "Betacam",
 				   "DVC": "DVCPRO",
 				   "HI8": "Hi8",
 				   "MDV": "MiniDV",
-				   "UM": "U-Matic"}
+				   "UM": "U-Matic",
+       			   "CASS": "Cassette",
+				   "TEST": "Tester tapes"}
 
 # def bytesToNormals(r, g, b):
 #     return round(r / 255, 3), round(g / 255, 3), round(b / 255, 3)
@@ -63,6 +65,7 @@ def lcd(line1, line2, color=""):
 
 cell = None
 while True:
+	print ()
 	cmd = input().upper()
  
 	commandHistory.append([cmd, datetime.datetime.now()])
@@ -89,19 +92,57 @@ while True:
    
 			try:
 				ws = sheet.worksheet(formatsToSheets[format])
+				print (ws)
 				cell = ws.find(cmd)
+				print (cell)
 				if cell != None:
 					rowProperties = ws.row_values(1)
 					rowValues = ws.row_values(cell.row)
 					for i in range(0, len(ws.row_values(cell.row))):
-						print (colored("{property}: {value}".format(property=rowProperties[i], value=rowValues[i]), "cyan"))
+						property = rowProperties[i]
+						value = rowValues[i]
+						color = "white"
+						if property == "Stage":
+							if value == "Inbox":
+								color = "light_red"
+							elif value == "Serial assigned":
+								color = "light_yellow"
+							elif value == "Awaiting QC":
+								color = "yellow"
+							elif value == "Outbox":
+								color = "green"
+							elif value == "Tapes with problems":
+								color = "red"
+						print (colored("{property}: {value}".format(property=rowProperties[i], value=rowValues[i]), color))
 					subprocess.Popen(["afplay", "chime-read.wav"])
 				else:
 					print (colored("Error: Media not found", "red"))
 					subprocess.Popen(["afplay", "chime-error.wav"])
 			except KeyError:
-				print (colored("Error: Format not found", "red"))
+				# print (colored("Error: Format not found", "red"))
+				traceback.print_exc()
 				subprocess.Popen(["afplay", "chime-error.wav"])
+    
+	elif cmd[0:4] == "TEST":
+		format = "TEST"
+		try:
+			ws = sheet.worksheet(formatsToSheets[format])
+			cell = ws.find(cmd)
+			if cell != None:
+				rowProperties = ws.row_values(1)
+				rowValues = ws.row_values(cell.row)
+				for i in range(0, len(ws.row_values(cell.row))):
+					property = rowProperties[i]
+					value = rowValues[i]
+
+					print (colored("{property}: {value}".format(property=property, value=value), "cyan"))
+				subprocess.Popen(["afplay", "chime-read.wav"])
+			else:
+				print (colored("Error: Media not found", "red"))
+				subprocess.Popen(["afplay", "chime-error.wav"])
+		except KeyError:
+			print (colored("Error: Format not found", "red"))
+			subprocess.Popen(["afplay", "chime-error.wav"])
 		
 	else:
 		if cell == None:
@@ -120,6 +161,14 @@ while True:
 				updateMedia(ws, cell, "Recording", "DVCPRO (analog) deck", format_recording, captureDate)
 			elif cmd == "MDV-IN":
 				updateMedia(ws, cell, "Recording", "MiniDV deck", format_recording, captureDate)
+			elif cmd == "HI8-IN":
+				updateMedia(ws, cell, "Recording", "Hi8 deck", format_recording, captureDate)
+			elif cmd == "CASS-1-IN":
+				updateMedia(ws, cell, "Recording", "Cassette deck 1", format_recording, captureDate)
+			elif cmd == "CASS-2-IN":
+				updateMedia(ws, cell, "Recording", "Cassette deck 2", format_recording, captureDate)
+			elif cmd == "CASS-3-IN":
+				updateMedia(ws, cell, "Recording", "Cassette deck 3", format_recording, captureDate)
 			elif cmd == "BAKE":
 				updateMedia(ws, cell, "Baking", "", format_tapesWithProblems, captureDate)
 			elif cmd == "PRINT":

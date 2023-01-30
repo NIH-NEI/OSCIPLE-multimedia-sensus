@@ -40,6 +40,13 @@ def title():
 			mediaTitle = "None"
 		else:
 			mediaTitle = ws.cell(cell.row, 1).value
+	elif deck == "hi8":
+		ws = sheet.worksheet("Hi8")
+		cell = ws.find("Recording")
+		if cell == None:
+			mediaTitle = "None"
+		else:
+			mediaTitle = ws.cell(cell.row, 1).value
 	else:
 		mediaTitle = "deck not recognized"
   
