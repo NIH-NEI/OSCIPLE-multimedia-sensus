@@ -73,7 +73,7 @@ while True:
 	if cmd[0:4] == "HS-2":
 		lcd(cmd, "", "y")
 		if cmd[5:7] == "ST":
-			if cell == None:
+			if cell is None:
 				print (colored("Error: No media selected", "red"))
 				subprocess.Popen(["afplay", "chime-error.wav"])
 			else:
@@ -95,7 +95,7 @@ while True:
 				print (ws)
 				cell = ws.find(cmd)
 				print (cell)
-				if cell != None:
+				if cell is not None:
 					rowProperties = ws.row_values(1)
 					rowValues = ws.row_values(cell.row)
 					for i in range(0, len(ws.row_values(cell.row))):
@@ -145,7 +145,7 @@ while True:
 			subprocess.Popen(["afplay", "chime-error.wav"])
 		
 	else:
-		if cell == None:
+		if cell is not None:
 			print (colored("Error: No media selected", "red"))
 			subprocess.Popen(["afplay", "chime-error.wav"])
 		else:
