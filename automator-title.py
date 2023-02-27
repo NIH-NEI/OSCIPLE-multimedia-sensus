@@ -7,7 +7,7 @@ scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/au
 creds = ServiceAccountCredentials.from_json_keyfile_name('client-secrets.json', scope)
 client = gspread.authorize(creds)
 
-sheet = client.open("Bioviz Ingest - NIH History Batch 2")
+sheet = client.open("Bioviz Ingest - NIH History Batch 3")
 
 
 
@@ -40,6 +40,7 @@ def title():
 			mediaTitle = "None"
 		else:
 			mediaTitle = ws.cell(cell.row, 1).value
+   
 	elif deck == "hi8":
 		ws = sheet.worksheet("Hi8")
 		cell = ws.find("Recording")
@@ -47,6 +48,15 @@ def title():
 			mediaTitle = "None"
 		else:
 			mediaTitle = ws.cell(cell.row, 1).value
+   
+	elif deck == "vhs":
+		ws = sheet.worksheet("VHS")
+		cell = ws.find("Recording")
+		if cell == None:
+			mediaTitle = "None"
+		else:
+			mediaTitle = ws.cell(cell.row, 1).value
+   
 	else:
 		mediaTitle = "deck not recognized"
   

@@ -7,7 +7,7 @@ scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/au
 creds = ServiceAccountCredentials.from_json_keyfile_name('client-secrets.json', scope)
 client = gspread.authorize(creds)
 
-sheet = client.open("Bioviz Ingest - NIH History Batch 2")
+sheet = client.open("Bioviz Ingest - NIH History Batch 3")
 
 commandHistory = []
 
@@ -18,7 +18,9 @@ formatsToSheets = {"BC": "Betacam",
 				   "MDV": "MiniDV",
 				   "UM": "U-Matic",
        			   "CASS": "Cassette",
-				   "TEST": "Tester tapes"}
+				   "TEST": "Tester tapes",
+				   "VHS": "VHS",
+       			   "FD": "Floppy disk"}
 
 # def bytesToNormals(r, g, b):
 #     return round(r / 255, 3), round(g / 255, 3), round(b / 255, 3)
@@ -70,7 +72,7 @@ while True:
  
 	commandHistory.append([cmd, datetime.datetime.now()])
  
-	if cmd[0:4] == "HS-2":
+	if cmd[0:4] == "HS-3":
 		lcd(cmd, "", "y")
 		if cmd[5:7] == "ST":
 			if cell is None:
@@ -104,9 +106,9 @@ while True:
 						color = "white"
 						if property == "Stage":
 							if value == "Inbox":
-								color = "light_red"
+								color = "magenta"
 							elif value == "Serial assigned":
-								color = "light_yellow"
+								color = "blue"
 							elif value == "Awaiting QC":
 								color = "yellow"
 							elif value == "Outbox":
@@ -145,7 +147,7 @@ while True:
 			subprocess.Popen(["afplay", "chime-error.wav"])
 		
 	else:
-		if cell is not None:
+		if cell is None:
 			print (colored("Error: No media selected", "red"))
 			subprocess.Popen(["afplay", "chime-error.wav"])
 		else:
@@ -163,6 +165,8 @@ while True:
 				updateMedia(ws, cell, "Recording", "MiniDV deck", format_recording, captureDate)
 			elif cmd == "HI8-IN":
 				updateMedia(ws, cell, "Recording", "Hi8 deck", format_recording, captureDate)
+			elif cmd == "VHS-IN":
+				updateMedia(ws, cell, "Recording", "VHS deck", format_recording, captureDate)
 			elif cmd == "CASS-1-IN":
 				updateMedia(ws, cell, "Recording", "Cassette deck 1", format_recording, captureDate)
 			elif cmd == "CASS-2-IN":
