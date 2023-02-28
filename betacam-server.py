@@ -1,11 +1,19 @@
-import serial, time
+import obsws_python as obs
+import serial, time, argparse
 from threading import Thread
 from http.server import BaseHTTPRequestHandler,HTTPServer
 PORT_NUMBER = 8081
 
+parser = argparse.ArgumentParser()
+parser.add_argument('mode', default="idle")
+args = parser.parse_args()
+
 ser = serial.Serial("/dev/tty.usbserial-A10N3SUD", 38400,
 							 serial.EIGHTBITS, serial.PARITY_ODD,
 							 serial.STOPBITS_ONE)
+
+
+cl = obs.ReqClient(host='192.168.1.173', port=4455, password='mylife')
 
 
 def sonyChecksum(msg):
@@ -47,6 +55,8 @@ def sonyDeckStatus(ser):
 		return "fast forward"
 	elif status[2] == 0x10 and status[3] == 0x88:
 		return "rewind"
+	else:
+		return status
 	
 	
 
@@ -75,6 +85,8 @@ def mode_go():
 		sonySend(ser, 2, b"\x00")  # stop
 		time.sleep(1)
 		sonySend(ser, 2, b"\x10")  # fast forward
+	else:
+		print (status)
 		
 
 	
@@ -84,8 +96,8 @@ def mode_pack():
 
 	status = sonyDeckStatus(ser)
 	if status == "standby":
-		sonySend(ser, 2, b"\x01")  # play
-		print ("tape has returned to standby mode; playing tape")
+		print ("tape has returned to standby mode; switching to 'obsrecord' mode")
+		MODE = "obsrecord"
 	elif status == "play":
 		print ("tape has started playing; switching to 'ingest' mode")
 		MODE = "ingest"
@@ -101,18 +113,47 @@ def mode_pack():
 def mode_obsrecord():
 	global MODE
 	print ("obsrecord")
+	cl.set_current_program_scene("slate")
+	cl.start_record()
+	time.sleep(5)
+	cl.set_current_program_scene("record")
+	MODE = "ingest"
+	
 	
 def mode_ingest():
 	global MODE
 	print ("ingest")
+ 
+	status = sonyDeckStatus(ser)
+	if status == "standby":
+		print ("beginning ingest")
+		sonySend(ser, 2, b"\x01")  # play
+	elif status == "play":
+		print ("play successful; switching to waitforfinish")
+		MODE = "waitforfinish"
+	# else:
+	# 	print ("unexpected deck status {status}; aborting".format(status=status))
+	# 	MODE = "idle"
+  
+
+def mode_waitforfinish():
+	global MODE
 	
+	status = sonyDeckStatus(ser)
+	if status == "play":
+		print ("recording")
+		MODE = "waitforfinish"
+	else:
+		print ("tape seems to be finished")
+		MODE = "finished"
+
 def mode_finished():
 	global MODE
+	sonySend(ser, 2, b"\x0f")  # eject
+	cl.stop_record()
 	print ("finished")
-	
-def mode_eject():
-	global MODE
-	print ("eject")
+	MODE = "idle"
+
 
 def mode_error():
 	global MODE
@@ -123,12 +164,12 @@ modes = {"idle": mode_idle,
 		 "pack": mode_pack,
 		 "obsrecord": mode_obsrecord,
 		 "ingest": mode_ingest,
+		 "waitforfinish": mode_waitforfinish,
 		 "finished": mode_finished,
-		 "eject": mode_eject,
 		 "error": mode_error,
 }
 
-MODE = "idle"
+MODE = args.mode
 
 
 	

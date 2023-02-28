@@ -154,7 +154,7 @@ while True:
 			captureDate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 			if cmd == "BC-IN":
 				updateMedia(ws, cell, "Recording", "Betacam deck", format_recording, captureDate)
-				# print (requests.get("http://localhost:8081/mode/go"))
+				print (requests.get("http://localhost:8081/mode/go"))
 			elif cmd == "UM-IN":
 				updateMedia(ws, cell, "Recording", "U-Matic deck", format_recording, captureDate)
 			elif cmd == "DVCFW-IN":
