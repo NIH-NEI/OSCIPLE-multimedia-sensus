@@ -17,10 +17,10 @@ formatsToSheets = {"BC": "Betacam",
 				   "HI8": "Hi8",
 				   "MDV": "MiniDV",
 				   "UM": "U-Matic",
-       			   "CASS": "Cassette",
+	   			   "CASS": "Cassette",
 				   "TEST": "Tester tapes",
 				   "VHS": "VHS",
-       			   "FD": "Floppy disk"}
+	   			   "FD": "Floppy disk"}
 
 # def bytesToNormals(r, g, b):
 #     return round(r / 255, 3), round(g / 255, 3), round(b / 255, 3)
@@ -124,7 +124,7 @@ while True:
 				# print (colored("Error: Format not found", "red"))
 				traceback.print_exc()
 				subprocess.Popen(["afplay", "chime-error.wav"])
-    
+	
 	elif cmd[0:4] == "TEST":
 		format = "TEST"
 		try:
@@ -154,7 +154,10 @@ while True:
 			captureDate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 			if cmd == "BC-IN":
 				updateMedia(ws, cell, "Recording", "Betacam deck", format_recording, captureDate)
-				print (requests.get("http://localhost:8081/mode/go"))
+				try:
+					print (requests.get("http://192.168.1.140:8081/mode/go"))
+				except:
+					print (colored("Error sending message to betacam server", "red"))
 			elif cmd == "UM-IN":
 				updateMedia(ws, cell, "Recording", "U-Matic deck", format_recording, captureDate)
 			elif cmd == "DVCFW-IN":
@@ -167,6 +170,10 @@ while True:
 				updateMedia(ws, cell, "Recording", "Hi8 deck", format_recording, captureDate)
 			elif cmd == "VHS-IN":
 				updateMedia(ws, cell, "Recording", "VHS deck", format_recording, captureDate)
+				try:
+					print (requests.get("http://localhost:8081/mode/go"))
+				except:
+					print (colored("Error sending message to betacam server", "red"))
 			elif cmd == "CASS-1-IN":
 				updateMedia(ws, cell, "Recording", "Cassette deck 1", format_recording, captureDate)
 			elif cmd == "CASS-2-IN":
