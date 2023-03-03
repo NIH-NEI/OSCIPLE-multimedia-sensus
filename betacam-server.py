@@ -158,6 +158,7 @@ def mode_go():
 		else:
 			print ("tape inserted.  pack is being skipped by request; rewinding instead")
 			deckSend(args.deck, "rewind")
+			MODE = "pack"
 	elif status == "fast forward":
 		print ("tape is fast-forwarding; switching to 'pack' mode")
 		MODE = "pack"
@@ -166,7 +167,7 @@ def mode_go():
 		MODE = "pack"
 	elif status == "tape out":
 		print ("tape out; waiting for tape to be inserted")
-	elif status == "playing":
+	elif status == "play":
 		print ("the tape is playing prematurely; stopping and resuming fast forward")
 		# sonySend(ser, 2, b"\x00")  # stop
 		deckSend(args.deck, "stop")
@@ -187,8 +188,10 @@ def mode_pack():
 		print ("tape has returned to standby mode; switching to 'obsrecord' mode")
 		MODE = "obsrecord"
 	elif status == "play":
-		print ("tape has started playing; switching to 'ingest' mode")
-		MODE = "ingest"
+		print ("the tape is playing prematurely; stopping and rewinding")
+		deckSend(args.deck, "stop")
+		time.sleep(1)
+		deckSend(args.deck, "rewind")
 	elif status == "fast forward":
 		print ("tape is still fast-forwarding; pack still in progress")
 	elif status == "rewind":

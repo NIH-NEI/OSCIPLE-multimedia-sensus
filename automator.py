@@ -145,7 +145,13 @@ while True:
 		except KeyError:
 			print (colored("Error: Format not found", "red"))
 			subprocess.Popen(["afplay", "chime-error.wav"])
-		
+   
+	elif cmd == "VHS-DONE":
+		try:
+			print (requests.get("http://localhost:8081/mode/finished"))
+		except:
+			print (colored("Error sending message to betacam server", "red"))
+
 	else:
 		if cell is None:
 			print (colored("Error: No media selected", "red"))
