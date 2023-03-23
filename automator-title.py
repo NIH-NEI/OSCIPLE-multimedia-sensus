@@ -10,7 +10,6 @@ client = gspread.authorize(creds)
 sheet = client.open("Bioviz Ingest - NIH History Batch 3")
 
 
-
 app = Flask(__name__)
 
 @app.route("/title")

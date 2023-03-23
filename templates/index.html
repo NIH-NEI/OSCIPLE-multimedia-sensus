@@ -1,6 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script type="text/javascript">
+
+    document.addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        cmdenter();
+      }
+    });
+
+    window.onload = function() {
+      document.getElementById("cmdinput").value = "";
+      document.getElementById("cmdinput").focus();
+    }
+
+
+
+    async function cmdenter() {
+      var cmd = document.getElementById("cmdinput").value;
+      var console = document.getElementById("console");
+      var mediaDetails = document.getElementById("mediaDetails");
+      let myObject = await fetch("/ajax?cmd=" + cmd);
+      let myjson = await myObject.json();
+
+      console.innerHTML = "<div class='bg-slate-100 m-1 p-1 drop-shadow-lg'>" + cmd + "</div>" + console.innerHTML;
+      
+      for (const [key, value] of Object.entries(myjson)) {
+        switch (value["messageType"])
+          {
+            case "message": console.innerHTML = "<div class='bg-slate-100 m-1 p-1 drop-shadow-lg'>" + value["message"].toString() + "</div>" + console.innerHTML; break;
+            case "media": 
+              {
+                
+                  var ugh = "";
+                for (const [mkey, mvalue] of Object.entries(value["message"])) {
+                  ugh += "<div class='col-span-1 bg-slate-200 p-1 m-1'>" + mkey + "</div><div class='text-m col-span-1 bg-slate-200 p-1 m-1'>" + mvalue + "</div>";
+                }
+                mediaDetails.innerHTML = "<div class='text-base grid grid-cols-2 gap-1'>" + ugh + "</div>";
+                break;
+              }
+            case "success": console.innerHTML = "<div class='text-green-700 bg-green-100 m-1 p-1 drop-shadow-lg'>" + value["message"].toString() + "</div>" + console.innerHTML; break;
+            case "error": console.innerHTML = "<div class='text-red-700 bg-red-100 m-1 p-1 drop-shadow-lg'>" + value["message"].toString() + "</div>" + console.innerHTML; break;
+            default: break; 
+          }
+      };
+
+      document.getElementById("cmdinput").value = "";
+      
+    }
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Magnetic</title>
@@ -8,7 +56,42 @@
 </head>
 
 <body>
-  <div class="font-extrabold">Magnetic</div>
+  <div class="grid grid-cols-4 gap-2">
+    <div class="col-span-4 bg-slate-700  rounded-lg  drop-shadow-xl text-white-100 p-6 m-1 font-extrabold text-5xl text-orange-200 shadow-xl text-center">
+      <h1>Magnetic v0.1 <span class="text-amber-600">(dev server)</span></h1>
+    </div>
+    <div class="  bg-rose-300 rounded-lg drop-shadow-xl p-6 m-1 font-bold">
+      <h2 class="text-2xl">Betacam</h2>
+      <div class="text-3xl text-red-800 font-bold">Recording</div>
+      <div class="text-1xl">HS-3-BSP-03</div>
+    </div>
+    <div class=" bg-rose-300 rounded-lg drop-shadow-xl p-6 m-1 font-bold">
+      <h2 class="text-2xl">U-Matic</h2>
+      <div class="text-3xl text-red-800 font-bold">Recording</div>
+      <div class="text-1xl">HS-3-UM-01</div>
+    </div>
+    <div class=" bg-lime-300 rounded-lg drop-shadow-xl p-6 m-1 font-bold">
+      <h2 class="text-2xl">S-VHS 1</h2>
+      <div class="text-3xl text-red-800 font-bold">Finished</div>
+      <div class="text-1xl">HS-3-VHS-02</div>
+    </div>
+    <div class="bg-sky-300  rounded-lg drop-shadow-xl p-6 m-1 font-bold">
+      <h2 class="text-2xl">S-VHS 2</h2>
+      <div class="text-3xl text-red-800 font-bold">Idle</div>
+      <div class="text-1xl">HS-3-VHS-04</div>
+    </div>
+    <div class="col-span-2 bg-slate-300 p-6 m-1 rounded-lg drop-shadow-xl font-bold text-3xl">
+      <h2>Bar code</h2>
+      <input type="text" id="cmdinput" />
+      <button onclick="cmdenter()">Go</button>
+      <div class="bg-slate-400 text-xl font-normal" id="console"></div>
+    </div>
+    <div class="col-span-2  bg-zinc-300 p-6 m-1 rounded-lg drop-shadow-xl font-bold text-3xl">
+      <h2>Media details</h2>
+      <div class="text-base font-normal drop-shadow-md" id="mediaDetails"></div>
+    </div>
+    
+  </div>
 
 </body>
 
