@@ -3,6 +3,7 @@ from termcolor import colored
 from gspread_formatting import *
 from oauth2client.service_account import ServiceAccountCredentials
 
+
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('client-secrets.json', scope)
 client = gspread.authorize(creds)
@@ -42,6 +43,51 @@ class Automator:
 	def __init__(self):
 		self.cell = None
 		self.ws = None
+  
+	def findRecordingDeck(self, deck):
+		if deck == "betacam":
+			ws = sheet.worksheet("Betacam")
+			cell = ws.find("Recording")
+			print ("cell: ", cell)
+			if cell == None:
+				ws = sheet.worksheet("Betacam SP")
+				cell = ws.find("Recording")
+				print ("cell: ", cell)
+				if cell == None:
+					mediaTitle = "None"
+				else:
+					mediaTitle = ws.cell(cell.row, 1).value
+					
+			else:
+				mediaTitle = ws.cell(cell.row, 1).value
+		elif deck == "umatic":
+			ws = sheet.worksheet("U-Matic")
+			cell = ws.find("Recording")
+			if cell == None:
+				mediaTitle = "None"
+			else:
+				mediaTitle = ws.cell(cell.row, 1).value
+	
+		elif deck == "hi8":
+			ws = sheet.worksheet("Hi8")
+			cell = ws.find("Recording")
+			if cell == None:
+				mediaTitle = "None"
+			else:
+				mediaTitle = ws.cell(cell.row, 1).value
+	
+		elif deck == "vhs":
+			ws = sheet.worksheet("VHS")
+			cell = ws.find("Recording")
+			if cell == None:
+				mediaTitle = "None"
+			else:
+				mediaTitle = ws.cell(cell.row, 1).value
+	
+		else:
+			mediaTitle = "deck not recognized"
+   
+		return mediaTitle
 
 	def updateMedia(self, stageName, location, format, captureDate=""):
 		rowcolrange = gspread.utils.rowcol_to_a1(self.cell.row, 1)+":"+gspread.utils.rowcol_to_a1(self.cell.row, self.ws.col_count)
@@ -53,9 +99,21 @@ class Automator:
 		msg = "Updated {media} to {stageName}, {location}".format(media=self.cell.value, stageName=stageName, location=location)
 		# print (colored(msg, "green"))
 		subprocess.Popen(["afplay", "chime-success.wav"])
-		# return {"messageType": "success", "message": msg}
+		
+		
+		deckMedia = ""
+		deckLocation = self.ws.title
+		if stageName == "Recording":
+			deckStatus = "Recording"
+			deckMedia = self.cell.value
+		elif stageName == "Awaiting QC":
+			deckStatus = "Idle"
+		else:
+			deckStatus = "Unknown"
+
 		wtf =  {0: {"messageType": "updateMedia", "message": {"media": self.cell.value, "stageName": stageName, "location": location}},
-			1: {"messageType": "success", "message": msg}}
+			1: {"messageType": "success", "message": msg},
+   			2: {"messageType": "deckStatus", "message": {"deck": deckLocation, "status": deckStatus, "media": deckMedia}}}
 		print (colored(wtf, "yellow"))
 		return wtf
  

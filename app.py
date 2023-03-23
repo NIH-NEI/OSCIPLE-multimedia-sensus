@@ -26,5 +26,23 @@ def ajax():
 	return resp
 
 
+
+@app.route("/title")
+def title():
+	deck = request.args["deck"]
+	mediaTitle = automator.findRecordingDeck(deck)
+  
+	print (mediaTitle)
+  
+	rofl = "<html><head><body><div style='color: white; font-size:72px'>{mediaTitle}</div><div style='color: white; font-size:72px'>Biovisualization, LLC</div></body></html>".format(mediaTitle=mediaTitle)
+	print (rofl)
+		
+	resp = make_response(rofl, 200)
+	resp.mimetype = "text/html"
+
+	print (resp.data)
+	return resp
+
+
 if __name__ == '__main__':
 	app.run(debug=True)

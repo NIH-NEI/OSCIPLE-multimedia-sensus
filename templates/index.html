@@ -14,6 +14,63 @@
       document.getElementById("cmdinput").focus();
     }
 
+    function updateDeckStatus(value)
+    {
+      var deck_container = "";
+      var deck_state = "";
+      var deck_media = "";
+      console.log(value);
+      console.log(value["deck"]);
+      switch (value["deck"])
+      {
+        case "Betacam":
+
+          deck_state = document.getElementById("deck1-state");
+          deck_media = document.getElementById("deck1-media");
+          deck_container = document.getElementById("deck1-container");
+          break;
+        case "U-Matic":
+          deck_state = document.getElementById("deck2-state");
+          deck_media = document.getElementById("deck2-media");
+          deck_container = document.getElementById("deck2-container");
+          break;
+        case "VHS":
+          deck_state = document.getElementById("deck3-state");
+          deck_media = document.getElementById("deck3-media");
+          deck_container = document.getElementById("deck3-container");
+          break;
+        case "Cassette":
+          deck_state = document.getElementById("deck4-state");
+          deck_media = document.getElementById("deck4-media");
+          deck_container = document.getElementById("deck4-container");
+          break;
+      }
+
+      var bgcolor = "";
+      var textcolor = "";
+      switch (value["status"])
+      {
+        case "Recording":
+          bgcolor = "#ff8888";
+          fgcolor = "#880000";
+          break;
+        case "Idle":
+          bgcolor = "#8888ff";
+          fgcolor = "#000088";
+          break;
+        default:
+          bgcolor = "#bbbbbb";
+          fgcolor = "#444444";
+          break;
+      }
+
+      deck_state.innerHTML = value["status"];
+      deck_media.innerHTML = value["media"];
+      deck_container.style.backgroundColor = bgcolor;
+      deck_state.style.color = fgcolor;
+      deck_media.style.color = fgcolor;
+        
+    }
 
 
     async function cmdenter() {
@@ -42,6 +99,11 @@
               }
             case "success": console.innerHTML = "<div class='text-green-700 bg-green-100 m-1 p-1 drop-shadow-lg'>" + value["message"].toString() + "</div>" + console.innerHTML; break;
             case "error": console.innerHTML = "<div class='text-red-700 bg-red-100 m-1 p-1 drop-shadow-lg'>" + value["message"].toString() + "</div>" + console.innerHTML; break;
+            case "deckStatus": 
+            {
+              updateDeckStatus(value["message"]);
+
+            }
             default: break; 
           }
       };
@@ -59,25 +121,39 @@
     <div class="col-span-4 bg-slate-700  rounded-lg  drop-shadow-xl text-white-100 p-6 m-1 font-extrabold text-5xl text-orange-200 shadow-xl text-center">
       <h1>Magnetic v0.1 <span class="text-amber-600">(dev server)</span></h1>
     </div>
-    <div class="  bg-rose-300 rounded-lg drop-shadow-xl p-6 m-1 font-bold">
+    <!-- <div class="  bg-rose-300 rounded-lg drop-shadow-xl p-6 m-1 font-bold">
+      <div class="grid grid-cols-4">
+        <div class="col-span-3">
+          <h2 class="text-2xl">Betacam</h2>
+          <div class="text-3xl text-red-800 font-bold" id="deck1-state">Recording</div>
+          <div class="text-1xl" id="deck1-media">HS-3-BSP-03</div>
+        </div>
+        <div class="grid grid-rows-3 gap-2">
+          <div class="bg-slate-400 p-1 text-l">&#x23F5;</div>
+          <div class="bg-slate-400 p-1 ">play</div>
+          <div class="bg-slate-400 p-1 ">play</div>
+        </div>
+      </div>
+    </div> -->
+    <div class=" bg-slate-300 rounded-lg drop-shadow-xl p-6 m-1 font-bold" id="deck1-container">
       <h2 class="text-2xl">Betacam</h2>
-      <div class="text-3xl text-red-800 font-bold">Recording</div>
-      <div class="text-1xl">HS-3-BSP-03</div>
+      <div class="text-3xl font-bold" id="deck1-state"></div>
+      <div class="text-1xl" id="deck1-media"></div>
     </div>
-    <div class=" bg-rose-300 rounded-lg drop-shadow-xl p-6 m-1 font-bold">
+    <div class=" bg-slate-300 rounded-lg drop-shadow-xl p-6 m-1 font-bold" id="deck2-container">
       <h2 class="text-2xl">U-Matic</h2>
-      <div class="text-3xl text-red-800 font-bold">Recording</div>
-      <div class="text-1xl">HS-3-UM-01</div>
+      <div class="text-3xl font-bold" id="deck2-state"></div>
+      <div class="text-1xl" id="deck2-media"></div>
     </div>
-    <div class=" bg-lime-300 rounded-lg drop-shadow-xl p-6 m-1 font-bold">
+    <div class=" bg-slate-300 rounded-lg drop-shadow-xl p-6 m-1 font-bold" id="deck3-container">
       <h2 class="text-2xl">S-VHS 1</h2>
-      <div class="text-3xl text-red-800 font-bold">Finished</div>
-      <div class="text-1xl">HS-3-VHS-02</div>
+      <div class="text-3xl font-bold" id="deck3-state"></div>
+      <div class="text-1xl" id="deck3-media"></div>
     </div>
-    <div class="bg-sky-300  rounded-lg drop-shadow-xl p-6 m-1 font-bold">
-      <h2 class="text-2xl">S-VHS 2</h2>
-      <div class="text-3xl text-red-800 font-bold">Idle</div>
-      <div class="text-1xl">HS-3-VHS-04</div>
+    <div class="bg-slate-300  rounded-lg drop-shadow-xl p-6 m-1 font-bold" id="deck4-container">
+      <h2 class="text-2xl">Cassette</h2>
+      <div class="text-3xl font-bold" id="deck4-state"></div>
+      <div class="text-1xl" id="deck4-media"></div>
     </div>
     <div class="col-span-2 bg-slate-300 p-6 m-1 rounded-lg drop-shadow-xl font-bold text-3xl">
       <h2>Bar code</h2>
