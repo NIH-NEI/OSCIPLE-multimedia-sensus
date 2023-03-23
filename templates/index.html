@@ -17,7 +17,8 @@
 
 
     async function cmdenter() {
-      var cmd = document.getElementById("cmdinput").value;
+      var cmd = new String(document.getElementById("cmdinput").value);
+      document.getElementById("cmdinput").value = "";
       var console = document.getElementById("console");
       var mediaDetails = document.getElementById("mediaDetails");
       let myObject = await fetch("/ajax?cmd=" + cmd);
@@ -44,8 +45,6 @@
             default: break; 
           }
       };
-
-      document.getElementById("cmdinput").value = "";
       
     }
   </script>
@@ -55,7 +54,7 @@
   <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
 </head>
 
-<body>
+<body class="bg-slate-900">
   <div class="grid grid-cols-4 gap-2">
     <div class="col-span-4 bg-slate-700  rounded-lg  drop-shadow-xl text-white-100 p-6 m-1 font-extrabold text-5xl text-orange-200 shadow-xl text-center">
       <h1>Magnetic v0.1 <span class="text-amber-600">(dev server)</span></h1>

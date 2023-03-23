@@ -653,6 +653,11 @@ video {
   background-color: rgb(212 212 216 / var(--tw-bg-opacity));
 }
 
+.bg-slate-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+}
+
 .to-blue-600 {
   --tw-gradient-to: #2563eb;
 }
