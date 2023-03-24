@@ -1,0 +1,22 @@
+{
+  "name": "magnetic",
+  "version": "0.0.1",
+  "description": "Inventory and pipeline management for media archival",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicksmadscience/archival-processor.git"
+  },
+  "author": "Nick Piegari",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicksmadscience/archival-processor/issues"
+  },
+  "homepage": "https://github.com/nicksmadscience/archival-processor#readme",
+  "dependencies": {
+    "tailwindcss": "^3.2.7"
+  }
+}
