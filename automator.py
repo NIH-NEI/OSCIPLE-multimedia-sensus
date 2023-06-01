@@ -223,9 +223,16 @@ class Automator:
 	
 		elif cmd == "VHS-DONE":
 			try:
-				print (requests.get("http://localhost:8081/mode/finished"))
+				print (requests.get("http://192.168.1.140:8002/mode/finished"))
 			except:
 				print (colored("Error sending message to vhs server", "red"))
+				return {0: {"messageType": "error", "message": "Error sending message to vhs server"}}
+
+		elif cmd == "BC-DONE":
+			try:
+				print (requests.get("http://192.168.1.140:8081/mode/finished"))
+			except:
+				print (colored("Error sending message to betacam server", "red"))
 				return {0: {"messageType": "error", "message": "Error sending message to betacam server"}}
 
 		else:
@@ -236,10 +243,10 @@ class Automator:
 			else:
 				captureDate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 				if cmd == "BC-IN":
-					# try:
-					# 	print (requests.get("http://192.168.1.140:8081/mode/go"))
-					# except:
-					# 	print (colored("Error sending message to betacam server", "red"))
+					try:
+						print (requests.get("http://192.168.1.140:8081/mode/go"))
+					except:
+						print (colored("Error sending message to betacam server", "red"))
 					return self.updateMedia("Recording", "Betacam deck", format_recording, captureDate)
 				elif cmd == "UM-IN":
 					return self.updateMedia("Recording", "U-Matic deck", format_recording, captureDate)
@@ -252,11 +259,11 @@ class Automator:
 				elif cmd == "HI8-IN":
 					return self.updateMedia("Recording", "Hi8 deck", format_recording, captureDate)
 				elif cmd == "VHS-IN":
-					return self.updateMedia("Recording", "VHS deck", format_recording, captureDate)
 					try:
-						print (requests.get("http://localhost:8081/mode/go"))
+						print (requests.get("http://192.168.1.140:8002/mode/go"))
 					except:
 						print (colored("Error sending message to betacam server", "red"))
+					return self.updateMedia("Recording", "VHS deck", format_recording, captureDate)
 				elif cmd == "CASS-1-IN":
 					return self.updateMedia("Recording", "Cassette deck 1", format_recording, captureDate)
 				elif cmd == "CASS-2-IN":

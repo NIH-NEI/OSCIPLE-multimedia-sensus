@@ -3,21 +3,24 @@ import serial, time, argparse
 from termcolor import colored
 from threading import Thread
 from http.server import BaseHTTPRequestHandler,HTTPServer
-PORT_NUMBER = 8081
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--mode', default="idle")
 parser.add_argument('--deck', default="betacam")
 parser.add_argument('--obs', default="192.168.1.173")
 parser.add_argument('--skippack', default="no")
+parser.add_argument('--port', default=8081)
 args = parser.parse_args()
+
+PORT_NUMBER = int(args.port)
 
 if args.deck == "betacam":
 	ser = serial.Serial("/dev/tty.usbserial-A10N3SUD", 38400,
 							 serial.EIGHTBITS, serial.PARITY_ODD,
 							 serial.STOPBITS_ONE)
 elif args.deck == "vhs":
-    ser = serial.Serial("/dev/tty.usbserial-140", 9600)
+    ser = serial.Serial("/dev/tty.usbserial-14630", 9600)
 else:
     print ("deck not found: {rofl}".format(rofl=args.deck))
     
@@ -135,7 +138,7 @@ def deckSend(deck, command):
     if deck=="vhs":
         ser.write(jvcCommands[command])
     elif deck=="betacam":
-        sonySend(sonyCommands[command]())
+        sonySend(*sonyCommands[command])
     else:
         print (colored("error: {deck} not found!".format(deck=deck), "red"))
         
