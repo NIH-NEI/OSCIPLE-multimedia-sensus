@@ -22,7 +22,7 @@ def makeOneHash(filepath):
 
 
 def hashmaker(hashcsvfile, filetypes, path):
-	with open(hashcsvfile, "w") as csvfile:
+	with open(hashcsvfile, "w", newline='') as csvfile:
 		rofl = csv.writer(csvfile)
 		# rofl.writerow(["filename", "hash"])
 		for root, dirs, files in os.walk(path, topdown=False):

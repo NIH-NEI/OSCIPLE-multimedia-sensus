@@ -22,17 +22,17 @@ for root, dirs, files in os.walk("/Users/nickpiegari"):
 			if ext not in fileextensions:
 				fileextensions[ext] = {"count": 1, "filesize": filesize, "hash": hash}
 				print ("found file type: {ext}".format(ext=ext))
-				with open("filetypes/filetype-{ext}.csv".format(ext=ext[1:]), "w") as rofl:
+				with open("filetypes/filetype-{ext}.csv".format(ext=ext[1:]), "w", newline='') as rofl:
 					rofl.write("\"{path}\",{size},{hash}\n".format(path=path.replace("\"","'"),size=filesize, hash=hash))
 			else:
 				fileextensions[ext]["count"] += 1
 				fileextensions[ext]["filesize"] += filesize
 				fileextensions[ext]["hash"] = hash
-				with open("filetypes/filetype-{ext}.csv".format(ext=ext[1:]), "a") as rofl:
+				with open("filetypes/filetype-{ext}.csv".format(ext=ext[1:]), "a", newline='') as rofl:
 					rofl.write("\"{path}\",{size},{hash}\n".format(path=path.replace("\"","'"),size=filesize,hash=hash))
 	
 	
-with open("filetype-list.csv", "w") as tehfile:
+with open("filetype-list.csv", "w", newline='') as tehfile:
 	writer = csv.writer(tehfile)
 	for ext, count in fileextensions.items():
 		writer.writerow([ext, count["count"], count["filesize"]])

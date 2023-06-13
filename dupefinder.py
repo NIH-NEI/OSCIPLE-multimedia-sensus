@@ -5,7 +5,7 @@ def dupefinder(hashcsvfile, dupefilepath, filetype):
 	with open(hashcsvfile, "r") as hashfile:
 		hashes = hashfile.readlines()
 
-	with open(dupefilepath, "w") as dupefile:
+	with open(dupefilepath, "w", newline='') as dupefile:
 		rofl = csv.writer(dupefile)
 		for i in range(0, len(hashes)):
 			hash = hashes[i].split(",")
