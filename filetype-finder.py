@@ -1,16 +1,38 @@
 import os, csv
+from hashmaker import *
 
-fileextensions = []
+fileextensions = {}
 
-with open("filetype-list2.csv", "a") as tehfile:
-	writer = csv.writer(tehfile)
-	for root, dirs, files in os.walk("/Volumes/LaCie"):
-		for file in files:
-			# print (file)
-			ext = os.path.splitext(file)[1]
+for root, dirs, files in os.walk("/Users/nickpiegari"):
+	for file in files:
+		ext = os.path.splitext(file)[1].lower()
+		path = os.path.join(root, file)
+  
+		try:
+			filesize = os.path.getsize(path)
+		except:
+			filesize = 0
+   
+		try:
+			hash = makeOneHash(path)
+		except:
+			hash = 0
+   
+		if path.find(".bzvol") == -1 and path.find("$Recycle") == -1 and path.find(".com") == -1 and path.find(".Spotlight") == -1 and path.find(".Volume") == -1 and path.find(".DS") == -1:
 			if ext not in fileextensions:
-				join = os.path.join(root, file)
-				if join.find(".bzvol") == -1 and join.find("$Recycle") == -1 and join.find(".com") == -1 and join.find(".Spotlight") == -1 and join.find(".Volume") == -1 and join.find(".DS") == -1:
-					fileextensions.append(ext)
-					print (os.path.join(root, file))
-					writer.writerow([ext, join])
+				fileextensions[ext] = {"count": 1, "filesize": filesize, "hash": hash}
+				print ("found file type: {ext}".format(ext=ext))
+				with open("filetypes/filetype-{ext}.csv".format(ext=ext[1:]), "w") as rofl:
+					rofl.write("\"{path}\",{size},{hash}\n".format(path=path.replace("\"","'"),size=filesize, hash=hash))
+			else:
+				fileextensions[ext]["count"] += 1
+				fileextensions[ext]["filesize"] += filesize
+				fileextensions[ext]["hash"] = hash
+				with open("filetypes/filetype-{ext}.csv".format(ext=ext[1:]), "a") as rofl:
+					rofl.write("\"{path}\",{size},{hash}\n".format(path=path.replace("\"","'"),size=filesize,hash=hash))
+	
+	
+with open("filetype-list.csv", "w") as tehfile:
+	writer = csv.writer(tehfile)
+	for ext, count in fileextensions.items():
+		writer.writerow([ext, count["count"], count["filesize"]])
