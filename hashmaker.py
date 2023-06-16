@@ -3,7 +3,6 @@
 
 
 import os, csv, sys, hashlib, time, argparse
-from termcolor import colored
 
 
 BUF_SIZE = 65536 * 16
@@ -40,11 +39,11 @@ def hashmaker(hashcsvfile, filetypes, path):
 							sha1 = makeOneHash(filepath)
 
 							print (filepath, sha1)
-							rofl.writerow([filepath.replace(path, ""), filesize, sha1, filetype, time.time() - startTime])
+							rofl.writerow([filepath.replace(path, "").encode("utf-8"), filesize, sha1, filetype, time.time() - startTime])
 					except:
 						pass
   
-	print (colored("Generated {csv}".format(csv=hashcsvfile), "green"))
+	print ("Generated {csv}".format(csv=hashcsvfile))
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(prog="Hashmaker",

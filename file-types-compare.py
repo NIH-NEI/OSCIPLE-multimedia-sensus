@@ -2,24 +2,23 @@ from dupefinder import *
 from hashmaker import *
 from dupe_dupe_checker import *
 import time, datetime, argparse
-from termcolor import colored
 
 
 
 def fileTypesCompare(hashcsvfile, filetypes, filepath):
-	print (colored("starting hash gather {time}".format(time=datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S"))), "cyan")
+	print ("starting hash gather {time}".format(time=datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")))
 
 	hashmaker(hashcsvfile, filetypes, filepath)
 
-	print (colored("starting hash gather {time}".format(time=datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S"))), "cyan")
+	print ("starting hash gather {time}".format(time=datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")))
 		
 	for filetype in filetypes:
 		startTime = time.time()
 		filename = "dupes-{filetype}.csv".format(filetype=filetype.replace(".", ""))
 		dupefinder(hashcsvfile, filename, filetype)
-		print (colored("deduping {filetype}".format(filetype=filetype)), "cyan")
+		print ("deduping {filetype}".format(filetype=filetype))
 		dedupe(filename)
-		print (colored("{filetype} completed in {time} seconds".format(filetype=filetype, time=round(time.time() - startTime, 2)), "green"))
+		print ("{filetype} completed in {time} seconds".format(filetype=filetype, time=round(time.time() - startTime, 2)))
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(prog="File Types Compare",

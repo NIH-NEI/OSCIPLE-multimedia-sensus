@@ -1,5 +1,4 @@
 import csv, argparse
-from termcolor import colored
 
 def dupefinder(hashcsvfile, dupefilepath, filetype):
 
@@ -24,7 +23,7 @@ def dupefinder(hashcsvfile, dupefilepath, filetype):
 							except IndexError:
 								pass
 	
-	print (colored("Generated {file}".format(file=dupefilepath)))
+	print ("Generated {file}".format(file=dupefilepath))
 	
 	
 if __name__ == "__main__":

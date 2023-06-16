@@ -1,5 +1,4 @@
 import csv, os, pprint, argparse
-from termcolor import colored
 
 def folderCompare(dupefile, outfile):
 
@@ -38,7 +37,7 @@ def folderCompare(dupefile, outfile):
 						print (out)
 						outfilefile.write("{out}\n".format(out=out))
 	
-	print (colored("Generated {outfile}".format(outfile=outfile), "green"))
+	print ("Generated {outfile}".format(outfile=outfile), "green")
 		
 
 if __name__ == "__main__":
