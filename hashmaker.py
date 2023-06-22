@@ -1,22 +1,21 @@
 # !/usr/bin/python
-
-
-
 import os, csv, sys, hashlib, time, argparse
 
 
-BUF_SIZE = 65536 * 16
+BUF_SIZE = 65536
 
 
-def makeOneHash(filepath):
+def makeOneHash(filepath, maxreps=999999999999999999999):
 	sha1 = hashlib.sha1()
 
+	reps = 0
 	with open(filepath, 'rb') as f:
-		# while True:
-		data = f.read(BUF_SIZE)
-			# if not data:
-			# 	break
-		sha1.update(data)
+		while reps < maxreps:
+			reps += 1
+			data = f.read(BUF_SIZE)
+			if not data:
+				break
+			sha1.update(data)
 
 	return sha1.hexdigest()
 
@@ -38,7 +37,6 @@ def hashmaker(hashcsvfile, filetypes, path):
 		  
 							sha1 = makeOneHash(filepath)
 
-							print (filepath, sha1)
 							rofl.writerow([filepath.replace(path, "").encode("utf-8"), filesize, sha1, filetype, time.time() - startTime])
 					except:
 						pass

@@ -6,11 +6,12 @@ def mergeallcsvfiles(path, outfile):
   
 		files = os.listdir(path)
 		for file in files:
-			ext = file.replace("filetype-", "").replace(".csv","")
+			# ext = file.replace("filetype-", "").replace(".csv","")
 			with open(os.path.join(path, file), "r") as filefile:
 				csvread = csv.reader(filefile)
 				for row in csvread:
-					combowriter.writerow(row + [ext])
+					# combowriter.writerow(row + [ext])
+					combowriter.writerow(row)
 	
 
 if __name__ == "__main__":
