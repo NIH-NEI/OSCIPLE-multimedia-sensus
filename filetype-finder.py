@@ -27,45 +27,50 @@ class filetypeFinder:
 
 		
 		self.startTime = time.time()
-		for root, dirs, files in os.walk(filepath):
-			for file in files:
-				self.filecount += 1
-				ext = os.path.splitext(file)[1].lower()
-				path = os.path.join(root, file)
-		
-				if path.find(".bzvol") == -1 and path.find("$Recycle") == -1 and path.find(".com") == -1 and path.find(".Spotlight") == -1 and path.find(".Volume") == -1 and path.find(".DS") == -1:
-					self.lastFile = path
-					self.lastFileTime = datetime.datetime.now()
-					
-					try:
-						filesize = os.path.getsize(path)
-					except:
-						filesize = 0
-     
-					if filesize > 0:
-						print (path)
-				
+		with open ("{f}-all.csv".format(f=filetypesfolder), "a", newline='') as bigcsvfile:
+			bigcsvwriter = csv.writer(bigcsvfile)
+			for root, dirs, files in os.walk(filepath):
+				for file in files:
+					self.filecount += 1
+					ext = os.path.splitext(file)[1].lower()
+					path = os.path.join(root, file)
+			
+					if path.find(".bzvol") == -1 and path.find("$Recycle") == -1 and path.find(".com") == -1 and path.find(".Spotlight") == -1 and path.find(".Volume") == -1 and path.find(".DS") == -1:
+						self.lastFile = path
+						self.lastFileTime = datetime.datetime.now()
+						
 						try:
-							hash = makeOneHash(path, maxhashreps)
+							filesize = os.path.getsize(path)
 						except:
-							hash = 0
+							filesize = 0
 		
-						if ext not in fileextensions:
-							fileextensions[ext] = {"count": 1, "filesize": filesize, "hash": hash}
-							print ("found file type: {ext}".format(ext=ext))
-							with open("{ftf}/filetype-{ext}.csv".format(ext=ext[1:], ftf=ftf), "w", newline='', encoding="utf-8") as csvfile:
-								csvwriter = csv.writer(csvfile)
-								csvwriter.writerow([path.encode("utf-8", "ignore"), filesize, hash, ext[1:], root.encode("utf-8", "ignore"), file.encode("utf-8", "ignore")])
-								# csvfile.write("\"{path}\",{size},{hash},{ext},{root},{file}\n".format(path=path.replace("\"","'"),size=filesize, hash=hash,ext=ext[1:],root=root,file=file))
-						else:
-							fileextensions[ext]["count"] += 1
-							fileextensions[ext]["filesize"] += filesize
-							fileextensions[ext]["hash"] = hash
-							with open("{ftf}/filetype-{ext}.csv".format(ext=ext[1:], ftf=ftf), "a", newline='', encoding="utf-8") as csvfile:
-								csvwriter = csv.writer(csvfile)
-								csvwriter.writerow([path.encode("utf-8", "ignore"), filesize, hash, ext[1:], root.encode("utf-8", "ignore"), file.encode("utf-8", "ignore")])
-								# csvfile.write("\"{path}\",{size},{hash},{ext},{root},{file}\n".format(path=path.replace("\"","'"),size=filesize,hash=hash,ext=ext[1:],root=root,file=file))
-		
+						if filesize > 0:
+							print (path)
+					
+							try:
+								hash = makeOneHash(path, maxhashreps)
+							except:
+								hash = 0
+
+							row = [path, filesize, hash, ext[1:], root, file]
+							bigcsvwriter.writerow(row)
+
+							if ext not in fileextensions:
+								fileextensions[ext] = {"count": 1, "filesize": filesize, "hash": hash}
+								print ("found file type: {ext}".format(ext=ext))
+								with open("{ftf}/filetype-{ext}.csv".format(ext=ext[1:], ftf=ftf), "w", newline='', encoding="utf-8") as csvfile:
+									csvwriter = csv.writer(csvfile)
+									csvwriter.writerow(row)
+									# csvfile.write("\"{path}\",{size},{hash},{ext},{root},{file}\n".format(path=path.replace("\"","'"),size=filesize, hash=hash,ext=ext[1:],root=root,file=file))
+							else:
+								fileextensions[ext]["count"] += 1
+								fileextensions[ext]["filesize"] += filesize
+								fileextensions[ext]["hash"] = hash
+								with open("{ftf}/filetype-{ext}.csv".format(ext=ext[1:], ftf=ftf), "a", newline='', encoding="utf-8") as csvfile:
+									csvwriter = csv.writer(csvfile)
+									csvwriter.writerow(row)
+									# csvfile.write("\"{path}\",{size},{hash},{ext},{root},{file}\n".format(path=path.replace("\"","'"),size=filesize,hash=hash,ext=ext[1:],root=root,file=file))
+			
 			
 			
 		with open(listpath, "w", newline='') as tehfile:

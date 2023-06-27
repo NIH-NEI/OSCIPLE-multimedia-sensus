@@ -5,28 +5,28 @@ def dedupe(filename):
 	dupes = []
 
 	with open(filename, "r") as csvfile:
-		rofl = csv.reader(csvfile)
+		csvreader = csv.reader(csvfile)
 		
-		for jawn in rofl:
-			dupes.append(jawn)
+		for line in csvreader:
+			dupes.append(line)
 			
 	deduped = dupes.copy()
 
 
-	for thingo in range(0, len(dupes)):
-		thingy = dupes[thingo]
+	for count in range(0, len(dupes)):
+		orig = dupes[count]
 
-		for wtf in dupes:
+		for cross in dupes:
 			try:
-				if thingy[0] == wtf[1] and wtf[0] == thingy[1]:
-					del deduped[thingo]
+				if orig[0] == cross[1] and cross[0] == orig[1]:
+					del deduped[count]
 			except:
 				pass
 			
 	with open(filename, "w", newline='') as csvfile:
-		rofl = csv.writer(csvfile)
+		csvwriter = csv.writer(csvfile)
 		for line in deduped:
-			rofl.writerow(line)
+			csvwriter.writerow(line)
 
 
 if __name__ == "__main__":
