@@ -53,7 +53,15 @@ class filetypeFinder:
 								hash = 0
 
 							row = [path, filesize, hash, ext[1:], root, file]
-							bigcsvwriter.writerow(row)
+							try:
+								bigcsvwriter.writerow(row)
+							except UnicodeEncodeError:
+								try:
+									row = [path.encode("ascii", "ignore"), filesize, hash, ext[1:], root.encode("ascii", "ignore"), file.encode("ascii", "ignore")]
+									bigcsvwriter.writerow(row)
+								except UnicodeEncodeError:
+									row = ["(unicode encode error)"]
+        
 
 							if ext not in fileextensions:
 								fileextensions[ext] = {"count": 1, "filesize": filesize, "hash": hash}
