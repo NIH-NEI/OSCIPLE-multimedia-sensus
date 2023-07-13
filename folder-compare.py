@@ -19,6 +19,7 @@ def folderCompare(dupefile, outfile):
 	
 
 	with open(outfile, "w", newline='') as outfilefile:
+		folderwriter = csv.writer(outfilefile)
 		for folderAName, folderAContents in uniquefolders.items():
 			# print (folderA)
 			for folderBName, folderBContents in uniquefolders.items():
@@ -35,9 +36,10 @@ def folderCompare(dupefile, outfile):
 					if filematches > 0:
 						out = "{filematches} matches out of {filecount} files in {folderA}, {folderB}".format(filematches=filematches, filecount=filecount, folderA=folderAName, folderB=folderBName)
 						print (out)
-						outfilefile.write("{out}\n".format(out=out))
+						# outfilefile.write("{out}\n".format(out=out))
+						folderwriter.writerow([filematches, filecount, folderAName, folderBName])
 	
-	print ("Generated {outfile}".format(outfile=outfile), "green")
+	print ("Generated {outfile}".format(outfile=outfile))
 		
 
 if __name__ == "__main__":
