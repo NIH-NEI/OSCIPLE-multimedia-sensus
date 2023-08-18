@@ -9,6 +9,7 @@ def folderCompare(dupefile, outfile):
 	
 		for line in rofl:
 			dir, file = os.path.split(line[0])
+			print (dir)
 			if dir not in uniquefolders:
 				uniquefolders[dir] = []
 	
@@ -20,12 +21,17 @@ def folderCompare(dupefile, outfile):
 
 	with open(outfile, "w", newline='') as outfilefile:
 		folderwriter = csv.writer(outfilefile)
+		total = len(uniquefolders)
+		count = 0
 		for folderAName, folderAContents in uniquefolders.items():
+			count += 1
+			print ("{a}/{b}".format(a=count, b=total))
 			# print (folderA)
 			for folderBName, folderBContents in uniquefolders.items():
 				if folderAName != folderBName:
 					filematches = 0
-					filecount = len(folderAContents)
+					filecountA = len(folderAContents)
+					filecountB = len(folderBContents)
 					
 					for file in folderAContents:
 						# print (file)
@@ -37,7 +43,7 @@ def folderCompare(dupefile, outfile):
 						out = "{filematches} matches out of {filecount} files in {folderA}, {folderB}".format(filematches=filematches, filecount=filecount, folderA=folderAName, folderB=folderBName)
 						print (out)
 						# outfilefile.write("{out}\n".format(out=out))
-						folderwriter.writerow([filematches, filecount, folderAName, folderBName])
+						folderwriter.writerow([filematches, filecountA, filecountB, folderAName, folderBName])
 	
 	print ("Generated {outfile}".format(outfile=outfile))
 		

@@ -1,4 +1,5 @@
-import csv, argparse
+import csv, argparse, time, datetime
+from time_estimate import *
 
 def dupefinder(hashcsvfile, dupefilepath, filetype, alltypes=False):
 
@@ -7,7 +8,10 @@ def dupefinder(hashcsvfile, dupefilepath, filetype, alltypes=False):
 
 	with open(dupefilepath, "w", newline='') as dupefile:
 		rofl = csv.writer(dupefile)
+		startTime = time.time()
 		for i in range(0, len(hashes)):
+
+			printTimeEstimate(i, len(hashes), startTime)
 			hash = hashes[i].split(",")
 			# print ("hash3: {hash3}   filetype: {filetype}".format(hash3=hash[3], filetype=filetype))
 			if hash[3].rstrip() == filetype:

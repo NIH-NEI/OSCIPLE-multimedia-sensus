@@ -1,4 +1,4 @@
-import csv, argparse
+import csv, argparse, time, datetime
 
 
 def dedupe(filename):
@@ -12,8 +12,15 @@ def dedupe(filename):
 			
 	deduped = dupes.copy()
 
-
+	startTime = time.time()
 	for count in range(0, len(dupes)):
+		percentDone = count / len(dupes)
+		elapsedTime = time.time() - startTime
+		try:
+			totalEstimate = elapsedTime / percentDone
+		except ZeroDivisionError:
+			totalEstimate = -1
+		print ("current/total: {a}/{b}   elapsed time: {c}   percent done: {d}   total estimate: {e}".format(a=count,b=len(dupes), c=str(datetime.timedelta(seconds=elapsedTime)), d=round(percentDone, 4), e=str(datetime.timedelta(seconds=totalEstimate))))
 		orig = dupes[count]
 
 		for cross in dupes:

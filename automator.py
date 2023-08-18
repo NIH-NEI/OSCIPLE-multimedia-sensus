@@ -8,12 +8,11 @@ scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/au
 creds = ServiceAccountCredentials.from_json_keyfile_name('client-secrets.json', scope)
 client = gspread.authorize(creds)
 
-sheet = client.open("Bioviz Ingest - NIH History Batch 3")
+sheet = client.open("Bioviz Ingest - NIH History Batch 4")
 
 commandHistory = []
 
 formatsToSheets = {"BC": "Betacam",
-				   "BSP": "Betacam SP",
 				   "DVC": "DVCPRO",
 				   "HI8": "Hi8",
 				   "MDV": "MiniDV",
@@ -21,7 +20,8 @@ formatsToSheets = {"BC": "Betacam",
 	   			   "CASS": "Cassette",
 				   "TEST": "Tester tapes",
 				   "VHS": "VHS",
-	   			   "FD": "Floppy disk"}
+	   			   "FD": "Floppy disk",
+          		   "HDD": "Hard drives"}
 
 # def bytesToNormals(r, g, b):
 #     return round(r / 255, 3), round(g / 255, 3), round(b / 255, 3)
@@ -141,11 +141,10 @@ class Automator:
 		
 		commandHistory.append([cmd, datetime.datetime.now()])
 	
-		if cmd[0:4] == "HS-3":
+		if cmd[0:4] == "HS-4":
 			# lcd(cmd, "", "y")
 			if cmd[5:7] == "ST":
 				if self.cell is None:
-					# print (colored("Error: No media selected", "red"))
 					subprocess.Popen(["afplay", "chime-error.wav"])
 					return {0: {"messageType": "error", "message": "Error: No media selected"}}
 				else:
@@ -153,11 +152,11 @@ class Automator:
 					bin = int(cmd[10:11])
 					if stage == 2:
 						return self.updateMedia("Serial assigned", "Bin {bin}".format(bin=bin), format_serialAssigned)
-					elif stage == 4:
+					elif stage == 3:
 						return self.updateMedia("Awaiting QC", "Bin {bin}".format(bin=bin), format_awaitingQC)
-					elif stage == 5:
+					elif stage == 4:
 						return self.updateMedia("Outbox", "Bin {bin}".format(bin=bin), format_outbox)
-					elif stage == 6:
+					elif stage == 5:
 						return self.updateMedia("Tapes with problems", "Bin {bin}".format(bin=bin), format_tapesWithProblems)
 			else:
 				format = cmd.split("-")[2]
@@ -193,7 +192,7 @@ class Automator:
 					else:
 						# print (colored("Error: Media not found", "red"))
 						subprocess.Popen(["afplay", "chime-error.wav"])
-						return {0: {"messageType": "error", "message": "Error: No media selected"}}
+						return {0: {"messageType": "error", "message": "Error: Media not found"}}
 				except KeyError:
 					# print (colored("Error: Format not found", "red"))
 					# traceback.print_exc()
