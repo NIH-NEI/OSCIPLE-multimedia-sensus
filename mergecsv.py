@@ -5,13 +5,15 @@ def mergecsv(file1, file1name, file2, file2name, outfile):
     
     with open(file1, "r") as file1file:
         file1reader = csv.reader(file1file)
-        for row in file1reader:
-            merged.append([row + file1name])
+        for row1 in file1reader:
+            row1.append(file1name)
+            merged.append(row1)
             
     with open(file2, "r") as file2file:
         file2reader = csv.reader(file2file)
-        for row in file2reader:
-            merged.append([row + file2name])
+        for row2 in file2reader:
+            row2.append(file2name)
+            merged.append(row2)
             
     with open(outfile, "w", newline='') as outfilefile:
         outfilewriter = csv.writer(outfilefile)

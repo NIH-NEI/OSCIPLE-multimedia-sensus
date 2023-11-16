@@ -40,7 +40,7 @@ def folderCompare(dupefile, outfile):
 							# print (file)
 							
 					if filematches > 0:
-						out = "{filematches} matches out of {filecount} files in {folderA}, {folderB}".format(filematches=filematches, filecount=filecount, folderA=folderAName, folderB=folderBName)
+						out = "{filematches} matches out of {filecountA}, {filecountB} files in {folderA}, {folderB}".format(filematches=filematches, filecountA=filecountA, filecountB=filecountB, folderA=folderAName, folderB=folderBName)
 						print (out)
 						# outfilefile.write("{out}\n".format(out=out))
 						folderwriter.writerow([filematches, filecountA, filecountB, folderAName, folderBName])
