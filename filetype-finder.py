@@ -11,12 +11,14 @@ class filetypeFinder:
 		self.startTime = 0.0
 		self.filecount = 0
 		self.skipUntil = 0
+		self.hashmake = hashMaker()
 
 
-	def findFileTypes(self, filepath, listpath, filetypesfolder, maxhashreps=99999999999999999999999, skipUntil=0):
+	def findFileTypes(self, filepath, listpath, filetypesfolder, maxhashreps=99999999999999999999999, skipUntil=0, maxfiles=99999999999999999999999):
 
 	
 		self.skipUntil = int(skipUntil)
+		
   
 		print ("{filepath} scan started at {datetime}".format(filepath=filepath, datetime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 		fileextensions = {}
@@ -34,8 +36,14 @@ class filetypeFinder:
 		with open ("{f}-all.csv".format(f=filetypesfolder), "a", newline='') as bigcsvfile:
 			bigcsvwriter = csv.writer(bigcsvfile)
 			for root, dirs, files in os.walk(filepath):
+				if self.filecount >= maxfiles:
+					print ("TIME TO BREAK LOL")
+					break
+				
+
 				for file in files:
 					self.filecount += 1
+
 					ext = os.path.splitext(file)[1].lower()
 					path = os.path.join(root, file)
 
@@ -52,13 +60,10 @@ class filetypeFinder:
 
 
 							if filesize > 0:
-								print (path)
+								print ("{size} {path}".format(size=filesize, path=path))
 						
-								try:
-									hash = makeOneHash(path, maxhashreps)
-								except:
-									hash = 0
-
+								hash = self.hashmake.makeOneHash(path, maxhashreps)
+								# do not try / except here; hash must work
 
 
 								try:
@@ -110,13 +115,14 @@ class filetypeFinder:
 			for ext, count in fileextensions.items():
 				writer.writerow([ext, count["count"], count["filesize"]])
 	
-		print ("{filepath} scan ended at {datetime}.  Total runtime: {rt}s".format(filepath=filepath, datetime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), rt=round(time.time() - self.startTime, 1)))
+		print ("{filepath} scan ended at {datetime}.  Total runtime: {rt}s  Total hashbuf: {hb}".format(filepath=filepath, datetime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), rt=round(time.time() - self.startTime, 1), hb=self.hashmake.bufTotal))
   
   
 	def reporter(self):
 		try:
 			while True:
-				print ("Last file: {f} at time: {t}.   File count: {fc}   Runtime: {rt}s".format(f=self.lastFile, t=self.lastFileTime.strftime("%Y-%m-%d %H:%M:%S"), fc=self.filecount, rt=round(time.time() - self.startTime, 1)))
+				print ("Last file: {f} at time: {t}.   File count: {fc}   Runtime: {rt}s   bufRate: {br}".format(f=self.lastFile, t=self.lastFileTime.strftime("%Y-%m-%d %H:%M:%S"), fc=self.filecount, rt=round(time.time() - self.startTime, 1), br=self.hashmake.bufRate / 5.0))
+				self.hashmake.bufRate = 0
 				time.sleep(5)
 		except KeyboardInterrupt:
 			pass
@@ -131,6 +137,7 @@ if __name__ == "__main__":
 	parser.add_argument('--filetypefolder', help="Folder where lists of files of each type will be written.  Do not include trailing slash", default="filetypes")
 	parser.add_argument('--maxhashreps', help="How many 16kb chunks to generate hash for each file.  Default: the whole thing", default=9999999999999999999999999)
 	parser.add_argument('--skipuntil', help="For continuing incomplete previous scans.  Will skip until this file number is encountered.", default=0)
+	parser.add_argument('--maxfiles', help="Only count this many files.", default=9999999999999999999999999999999999)
 	args = parser.parse_args()
  
 	finder = filetypeFinder()
@@ -139,7 +146,7 @@ if __name__ == "__main__":
 	reporterThread.daemon = True
 	reporterThread.start()
 
-	finder.findFileTypes(args.filepath, args.csvfile, args.filetypefolder, args.maxhashreps, args.skipuntil)
+	finder.findFileTypes(args.filepath, args.csvfile, args.filetypefolder, int(args.maxhashreps), args.skipuntil, int(args.maxfiles))
 
  
  
