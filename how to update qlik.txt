@@ -1,0 +1,15 @@
+qliksensedev.nih.gov
+
+qlik > work > onhm file analyzer - current
+
+prepare | data manager > data load editor
+
+attached files > select data
+
+delete old
+
+upload new
+
+field names > no field names
+
+s

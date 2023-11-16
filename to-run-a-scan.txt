@@ -1,0 +1,21 @@
+to run a scan
+
+* connect to vpn on ethernet and power (from home)
+
+* map network drive:  smb://odapps1/Archived Images/ (z drive)
+* map network drive:  smb://odapps1/OCNHO/ (o drive)
+
+* run this:  python3 filetype-finder.py /volumes/ocnho --csvfile="odrive-{DATE}.csv" --filetypefolder="odrive-{DATE}"
+* run this:  python3 filetype-finder.py "/volumes/Archived Images" --csvfile="zdrive-{DATE}.csv" --filetypefolder="od-history-{DATE}"
+
+* merge all relevant csv files
+
+* dupefinder
+* dupe dupe remover
+
+* folder-compare
+
+
+
+python3 filetype-finder.py /volumes/ocnho --csvfile="odrive-2023-11-14.csv" --filetypefolder="odrive-2023-11-14"
+python3 filetype-finder.py "/volumes/Archived Images" --csvfile="zdrive-{DATE}.csv" --filetypefolder="od-history-{DATE}"
