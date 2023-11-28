@@ -1,4 +1,4 @@
-import csv, argparse, time, datetime
+import csv, argparse, time, datetime, random, traceback
 from hashmaker import *
 
 dupe_path = 0
@@ -10,29 +10,71 @@ dupes = {}
 hashmake = hashMaker()
 
 
-def dupefullsize(dupecountfile, dupefullfile):
+
+
+
+def dupefullsize(dupecountfile, dupefullfile, skipuntil=0):
     with open(dupecountfile, "r") as dupefile:
         dupecountreader = csv.reader(dupefile)
 
         with open(dupefullfile, "w") as fullfile:
             fullwriter = csv.writer(fullfile)
         
+            dupecountcount = 0
             for dupe in dupecountreader:
+                dupecountcount += 1
                 print (dupe)
-                control = hashmake.makeOneHash(dupe[dupe_path], 1)
-                fullhash = hashmake.makeOneHash(dupe[dupe_path], 99999999999999999999)
-                
-                if control == dupe[dupe_hash]:
-                    control = "YES"
-                else:
-                    control = "NO"
 
-                if fullhash == dupe[dupe_hash]:
-                    match = "YES"
-                else:
-                    match = "NO"
+                if dupecountcount > skipuntil:
+                    
+                    try:
+                        startTime = time.time()
+                        hashActual = hashmake.makeOneHash(dupe[dupe_path], 999999999999999999999999)
+                        timeActual = time.time() - startTime
 
-                fullwriter.writerow([dupe[dupe_path], control, match, fullhash, dupe[dupe_hash]])
+                        # startTime = time.time()
+                        # onehash = 1 if hashmake.makeOneHash(dupe[dupe_path], 1) == actualhash else 0
+                        # timeOne = time.time() - startTime
+
+                        # startTime = time.time()
+                        # twohash = 1 if hashmake.makeOneHash(dupe[dupe_path], 2) == actualhash else 0
+                        # timeTwo = time.time() - startTime
+
+                        # startTime = time.time()
+                        # eighthash = 1 if hashmake.makeOneHash(dupe[dupe_path], 8) == actualhash else 0
+                        # timeEight = time.time() - startTime
+
+                        # startTime = time.time()
+                        # sixtyfourhash = 1 if hashmake.makeOneHash(dupe[dupe_path], 64) == actualhash else 0
+                        # time64 = time.time() - startTime
+
+                        # startTime = time.time()
+                        # fivetwelvehash = 1 if hashmake.makeOneHash(dupe[dupe_path], 512) == actualhash else 0
+                        # time512 = time.time() - startTime
+
+
+
+                        
+                        # fullwriter.writerow([dupe[dupe_path], timeActual, onehash, timeOne, twohash, timeTwo, eighthash, timeEight, sixtyfourhash, time64, fivetwelvehash, time512, dupe[dupe_hash]])
+
+                        startTime = time.time()
+                        hash256 = 1 if hashmake.makeOneHash(dupe[dupe_path], 256) == hashActual else 0
+                        time256 = time.time() - startTime
+
+                        startTime = time.time()
+                        hash512 = 1 if hashmake.makeOneHash(dupe[dupe_path], 512) == hashActual else 0
+                        time512 = time.time() - startTime
+
+                        startTime = time.time()
+                        hash1024 = 1 if hashmake.makeOneHash(dupe[dupe_path], 1024) == hashActual else 0
+                        time1024 = time.time() - startTime
+
+
+                        fullwriter.writerow([dupe[dupe_path], timeActual, hash256, time256, hash512, time512, hash1024, time1024, dupe[dupe_hash]])
+                    except:
+                        traceback.print_exc()
+                else:
+                    print ("skipping")
 
 
 
@@ -44,6 +86,7 @@ if __name__ == "__main__":
     parser.add_argument('dupecountfile', help="Input CSV file containing dupecount")
     parser.add_argument(
         'dupefullfile', help="Output CSV containing whether or not each dupe is still a dupe")
+    parser.add_argument('--skipuntil', help="For continuing incomplete previous scans or otherwise jumping ahead.  Will skip until this file number is encountered.", default=0)
     args = parser.parse_args()
 
-    dupefullsize(args.dupecountfile, args.dupefullfile)
+    dupefullsize(args.dupecountfile, args.dupefullfile, int(args.skipuntil))

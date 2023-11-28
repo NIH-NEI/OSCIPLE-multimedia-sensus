@@ -17,8 +17,10 @@ def dupecounter(dupecsvfile, dupecountfile):
                 dupecount[dupe[dupe_original]]["count"] = 0
                 dupecount[dupe[dupe_original]]["filesize"] = dupe[dupe_filesize]
                 dupecount[dupe[dupe_original]]["hash"] = dupe[dupe_hash]
+                dupecount[dupe[dupe_original]]["matches"] = [dupe[dupe_matched]]
             else:
                 dupecount[dupe[dupe_original]]["count"] += 1
+                dupecount[dupe[dupe_original]]["matches"].append(dupe[dupe_matched])
 
         with open(dupecountfile, "w") as countfile:
             countwriter = csv.writer(countfile)
@@ -26,8 +28,14 @@ def dupecounter(dupecsvfile, dupecountfile):
             for name, info in dupecount.items():
                 countwriter.writerow([name, info["count"], info["filesize"], info["hash"]])
 
+        with open("dupereportfile.txt", "w") as reportfile:
+            for name, info in dupecount.items():
+                reportfile.write("\n\n{name}\n".format(name=name))
+                for match in info["matches"]:
+                    reportfile.write("\t{match}\n".format(match=match))
 
-    print (dupecount)
+
+    # print (dupecount)
 
 
 

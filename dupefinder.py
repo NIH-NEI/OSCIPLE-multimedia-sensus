@@ -22,10 +22,13 @@ def dupefinder(hashcsvfile, dupefilepath):
         # hashes = hashfile.readlines()
 
     comparehashes = []
+    comparesizes = []
     for j in range(0, len(hashes)):
         omfg = hashes[j]
         hash = omfg[hash_Hash]
+        size = omfg[hash_FileSize]
         comparehashes.append(hash)
+        comparesizes.append(size)
         # print (hash)
         if len(hash) != 40:
             print ("hash is not 40")
@@ -47,7 +50,7 @@ def dupefinder(hashcsvfile, dupefilepath):
                 if i != j:  # and hash[0].find(".DS_Store") == -1 and hash[0].find(".Spotlight-V100") == -1 and hash[0].find(".Trashes") == -1 and comparehash[0].find(".DS_Store") == -1 and comparehash[0].find(".Spotlight-V100") == -1 and comparehash[0].find(".Trashes") == -1:
                     # print (comparehash)
                     try:
-                        if hash[hash_Hash] == comparehashes[j]:
+                        if hash[hash_Hash] == comparehashes[j] and hash[hash_FileSize] == comparesizes[j]:
                             comparehash = hashes[j]
                             print("dupe detected: {name}, {name2}".format(name=hash[hash_URL], name2=comparehash[hash_URL]))
                             rofl.writerow([hash[hash_URL], comparehash[hash_URL], hash[hash_FileSize], hash[hash_Hash]])

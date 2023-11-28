@@ -17,5 +17,15 @@ to run a scan
 
 
 
-python3 filetype-finder.py /volumes/ocnho --csvfile="odrive-2023-11-14.csv" --filetypefolder="odrive-2023-11-14" --maxhashreps=8
-python3 filetype-finder.py "/volumes/Archived Images" --csvfile="zdrive-2023-11-14.csv" --filetypefolder="od-history-2023-11-14"
+
+
+notes
+- the ideal hash rep count appears to be around 512 (edit: maybe 128 will work when coupled with file size?  maybe less??)
+- i think i was doing a dumb by comparing *any* hash file of different amounts of reps, but i also think this number is cool
+- matching hash AND file size is probably a good idea
+- adding extra reps isn't quite as time-intensive as i thought; just doing the file i/o operation generally takes more time than adding bits (unless you're scanning entire files)
+
+
+
+python3 filetype-finder.py /volumes/ocnho --csvfile="odrive-2023-11-22.csv" --filetypefolder="odrive-2023-11-22" --maxhashreps=128
+python3 filetype-finder.py "/volumes/Archived Images" --csvfile="zdrive-2023-11-22.csv" --filetypefolder="zdrive-2023-11-22" --maxhashreps=128
