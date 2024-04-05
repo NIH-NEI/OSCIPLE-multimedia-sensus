@@ -1,17 +1,20 @@
 to run a scan
 
+* make sure msmv is running
+
 * connect to vpn on ethernet and power (from home)
 
 * map network drive:  smb://odapps1/Archived Images/ (z drive)
 * map network drive:  smb://odapps1/OCNHO/ (o drive)
 
-* run this:  python3 filetype-finder.py /volumes/ocnho --csvfile="odrive-{DATE}.csv" --filetypefolder="odrive-{DATE}"
-* run this:  python3 filetype-finder.py "/volumes/Archived Images" --csvfile="zdrive-{DATE}.csv" --filetypefolder="od-history-{DATE}"
+* run this:  python3 filetype-finder.py /volumes/ocnho --csvfile="odrive-{DATE}.csv" --filetypefolder="odrive-{DATE}" --maxhashreps=128
+* run this:  python3 filetype-finder.py "/volumes/Archived Images" --csvfile="zdrive-{DATE}.csv" --filetypefolder="od-history-{DATE}" --maxhashreps=128
 
 * merge all relevant csv files
 
 * dupefinder
-* dupe_dupe_checker
+* dupe_dupe_checker, but on the original file?  perhaps before dupefinder?  idfk
+* why is the dupefile so huge?  i may have missed something
 
 * folder-compare
 
