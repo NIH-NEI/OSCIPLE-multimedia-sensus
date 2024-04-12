@@ -56,3 +56,4 @@ if __name__ == "__main__":
 	args = parser.parse_args()
  
 	folderCompare(args.dupefile, args.outfile)
+	

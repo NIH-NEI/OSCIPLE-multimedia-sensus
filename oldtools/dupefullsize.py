@@ -10,9 +10,6 @@ dupes = {}
 hashmake = hashMaker()
 
 
-
-
-
 def dupefullsize(dupecountfile, dupefullfile, skipuntil=0):
     with open(dupecountfile, "r") as dupefile:
         dupecountreader = csv.reader(dupefile)
@@ -32,25 +29,6 @@ def dupefullsize(dupecountfile, dupefullfile, skipuntil=0):
                         hashActual = hashmake.makeOneHash(dupe[dupe_path], 999999999999999999999999)
                         timeActual = time.time() - startTime
 
-                        # startTime = time.time()
-                        # onehash = 1 if hashmake.makeOneHash(dupe[dupe_path], 1) == actualhash else 0
-                        # timeOne = time.time() - startTime
-
-                        # startTime = time.time()
-                        # twohash = 1 if hashmake.makeOneHash(dupe[dupe_path], 2) == actualhash else 0
-                        # timeTwo = time.time() - startTime
-
-                        # startTime = time.time()
-                        # eighthash = 1 if hashmake.makeOneHash(dupe[dupe_path], 8) == actualhash else 0
-                        # timeEight = time.time() - startTime
-
-                        # startTime = time.time()
-                        # sixtyfourhash = 1 if hashmake.makeOneHash(dupe[dupe_path], 64) == actualhash else 0
-                        # time64 = time.time() - startTime
-
-                        # startTime = time.time()
-                        # fivetwelvehash = 1 if hashmake.makeOneHash(dupe[dupe_path], 512) == actualhash else 0
-                        # time512 = time.time() - startTime
 
 
 

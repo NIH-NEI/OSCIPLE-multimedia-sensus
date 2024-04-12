@@ -35,8 +35,6 @@ def dupecounter(dupecsvfile, dupecountfile):
                     reportfile.write("\t{match}\n".format(match=match))
 
 
-    # print (dupecount)
-
 
 
 if __name__ == "__main__":

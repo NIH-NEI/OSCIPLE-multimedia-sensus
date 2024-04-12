@@ -21,6 +21,7 @@ def mergecsv(file1, file1name, file2, file2name, outfile):
             outfilewriter.writerow(row)
             
             
+            
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="CSV Merge",
                                      description="Merges two CSV files.")
