@@ -11,7 +11,7 @@ class hashMaker:
 		self.bufRate = 0
 		self.bufTotal = 0
 
-	def makeOneHash(self, filepath, maxreps=999999999999999999999):
+	def makeOneHash(self, filepath, maxreps=pow(2, 100)):
 		sha1 = hashlib.sha1()
 
 		reps = 0
@@ -33,7 +33,6 @@ class hashMaker:
 	def makehash(self, hashcsvfile, filetypes, path):
 		with open(hashcsvfile, "w", newline='') as csvfile:
 			rofl = csv.writer(csvfile)
-			# rofl.writerow(["filename", "hash"])
 			for root, dirs, files in os.walk(path, topdown=False):
 				for name in files:
 					filetype = os.path.splitext(name)[1]

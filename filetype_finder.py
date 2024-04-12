@@ -1,8 +1,12 @@
 import os, csv, datetime, argparse, time, sys
 from hashmaker import *
 from threading import Thread
-# import scandir
 
+
+"""
+Makes a CSV list of every file type in a path.  Additionally, creates a separate list of every file of each file type
+in the specified folder (defaults to filetypes/)
+"""
 
 class filetypeFinder:
 	def __init__(self):
@@ -14,12 +18,9 @@ class filetypeFinder:
 		self.hashmake = hashMaker()
 
 
-	def findFileTypes(self, filepath, listpath, filetypesfolder, maxhashreps=99999999999999999999999, skipUntil=0, maxfiles=99999999999999999999999):
-
-	
+	def findFileTypes(self, filepath, listpath, filetypesfolder, maxhashreps=pow(2, 100), skipUntil=0, maxfiles=pow(2, 100)):
 		self.skipUntil = int(skipUntil)
 		
-  
 		print ("{filepath} scan started at {datetime}".format(filepath=filepath, datetime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 		fileextensions = {}
 	
@@ -37,7 +38,6 @@ class filetypeFinder:
 			bigcsvwriter = csv.writer(bigcsvfile)
 			for root, dirs, files in os.walk(filepath):
 				if self.filecount >= maxfiles:
-					print ("TIME TO BREAK LOL")
 					break
 				
 
@@ -48,7 +48,7 @@ class filetypeFinder:
 					path = os.path.join(root, file)
 
 					if self.filecount >= self.skipUntil:
-				
+						# skip system files and other unlikely-to-be-useful stuff that tends to make the results enormous
 						if path.find(".bzvol") == -1 and path.find("$Recycle") == -1 and path.find(".com") == -1 and path.find(".Spotlight") == -1 and path.find(".Volume") == -1 and path.find(".DS") == -1:
 							self.lastFile = path
 							self.lastFileTime = datetime.datetime.now()
@@ -63,22 +63,18 @@ class filetypeFinder:
 								print ("{size} {path}".format(size=filesize, path=path))
 						
 								hash = self.hashmake.makeOneHash(path, maxhashreps)
-								# do not try / except here; hash must work
 
-
-								try:
+								try: # not all files have a created time
 									createdTime = datetime.datetime.fromtimestamp(os.stat(path).st_birthtime).strftime("%Y-%m-%d %H:%M:%S")
 								except:
 									createdTime = 0
 
-
-								try:
+								try: # not all files have a modified time
 									modifiedTime = datetime.datetime.fromtimestamp(os.path.getmtime(path)).strftime("%Y-%m-%d %H:%M:%S")
 								except:
 									modifiedTime = 0
 
 								
-
 								row = [path, filesize, hash, ext[1:], root, file, createdTime, modifiedTime]
 								try:
 									bigcsvwriter.writerow(row)
@@ -96,7 +92,6 @@ class filetypeFinder:
 									with open("{ftf}/filetype-{ext}.csv".format(ext=ext[1:], ftf=ftf), "w", newline='', encoding="utf-8") as csvfile:
 										csvwriter = csv.writer(csvfile)
 										csvwriter.writerow(row)
-										# csvfile.write("\"{path}\",{size},{hash},{ext},{root},{file}\n".format(path=path.replace("\"","'"),size=filesize, hash=hash,ext=ext[1:],root=root,file=file))
 								else:
 									fileextensions[ext]["count"] += 1
 									fileextensions[ext]["filesize"] += filesize
@@ -104,7 +99,7 @@ class filetypeFinder:
 									with open("{ftf}/filetype-{ext}.csv".format(ext=ext[1:], ftf=ftf), "a", newline='', encoding="utf-8") as csvfile:
 										csvwriter = csv.writer(csvfile)
 										csvwriter.writerow(row)
-										# csvfile.write("\"{path}\",{size},{hash},{ext},{root},{file}\n".format(path=path.replace("\"","'"),size=filesize,hash=hash,ext=ext[1:],root=root,file=file))
+
 					else:
 						print ("file count is {fc}; skipping until {su} ({fn})".format(fc=self.filecount, su=self.skipUntil, fn=path))
 				
@@ -135,9 +130,9 @@ if __name__ == "__main__":
 	parser.add_argument('filepath', help="The path to scan")
 	parser.add_argument('--csvfile', help="Output filetype list", default="filetypes.csv")
 	parser.add_argument('--filetypefolder', help="Folder where lists of files of each type will be written.  Do not include trailing slash", default="filetypes")
-	parser.add_argument('--maxhashreps', help="How many 16kb chunks to generate hash for each file.  Default: the whole thing", default=9999999999999999999999999)
+	parser.add_argument('--maxhashreps', help="How many 16kb chunks to generate hash for each file.  Default: the entire file.", default=pow(2, 100)) # basically infinity
 	parser.add_argument('--skipuntil', help="For continuing incomplete previous scans.  Will skip until this file number is encountered.", default=0)
-	parser.add_argument('--maxfiles', help="Only count this many files.", default=9999999999999999999999999999999999)
+	parser.add_argument('--maxfiles', help="Only count this many files.", default=pow(2, 100))
 	args = parser.parse_args()
  
 	finder = filetypeFinder()
@@ -147,7 +142,3 @@ if __name__ == "__main__":
 	reporterThread.start()
 
 	finder.findFileTypes(args.filepath, args.csvfile, args.filetypefolder, int(args.maxhashreps), args.skipuntil, int(args.maxfiles))
-
- 
- 
-# /System/Volumes/Data/private/var/folders/y0/k9wn801n66z_y48k_jmwvq440000gn/T/clr-debug-pipe-932-1686583729-in

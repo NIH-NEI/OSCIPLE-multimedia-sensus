@@ -1,6 +1,8 @@
 import csv, argparse, time, datetime
 
 
+"""Removes all dupes from a list that are simply a reverse of another dupe."""
+
 def dedupe(filename):
 	dupes = []
 
