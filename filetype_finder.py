@@ -46,10 +46,11 @@ class filetypeFinder:
 
 					ext = os.path.splitext(file)[1].lower()
 					path = os.path.join(root, file)
+					filename = file
 
 					if self.filecount >= self.skipUntil:
 						# skip system files and other unlikely-to-be-useful stuff that tends to make the results enormous
-						if path.find(".bzvol") == -1 and path.find("$Recycle") == -1 and path.find(".com") == -1 and path.find(".Spotlight") == -1 and path.find(".Volume") == -1 and path.find(".DS") == -1:
+						if path.find(".bzvol") == -1 and path.find("$Recycle") == -1 and path.find(".com") == -1 and path.find(".Spotlight") == -1 and path.find(".Volume") == -1 and path.find(".DS") == -1 and path.find(".tmp") == -1 and path.find(".log") == -1 and path.find(".DS_Store") == -1 and ext != "":
 							self.lastFile = path
 							self.lastFileTime = datetime.datetime.now()
 							
@@ -57,7 +58,6 @@ class filetypeFinder:
 								filesize = os.path.getsize(path)
 							except:
 								filesize = 0
-
 
 							if filesize > 0:
 								print ("{size} {path}".format(size=filesize, path=path))
@@ -75,12 +75,12 @@ class filetypeFinder:
 									modifiedTime = 0
 
 								
-								row = [path, filesize, hash, ext[1:], root, file, createdTime, modifiedTime]
+								row = [filename, "NEI", path, filesize, hash, ext[1:], root, file, createdTime, modifiedTime]
 								try:
 									bigcsvwriter.writerow(row)
 								except UnicodeEncodeError:
 									try:
-										row = [path.encode("ascii", "ignore"), filesize, hash, ext[1:], root.encode("ascii", "ignore"), file.encode("ascii", "ignore"), modifiedTime, createdTime]
+										row = [filename, "NEI", path.encode("ascii", "ignore"), filesize, hash, ext[1:], root.encode("ascii", "ignore"), file.encode("ascii", "ignore"), modifiedTime, createdTime]
 										bigcsvwriter.writerow(row)
 									except UnicodeEncodeError:
 										row = ["(unicode encode error)"]
