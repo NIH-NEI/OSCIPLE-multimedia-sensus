@@ -10,13 +10,10 @@ The summary report includes the following columns:
 
 The output CSV file is named '{IC}-SummSummary.csv' and is saved in the current working directory.
 
-### To execute the file please use the following command based on OS.
+### To execute the file please use the following command.
 
-## MACOS
-
-* python3 {pythonfilename} {filepath} 
-	* pythonfilename = Python file name trying to execute
-	* filepath = Path trying to Scan
-* Command to run: python3 filetype_summary.py /Volumes
+* **Command:** python3 {pythonfilename} {filepath} 
+	* Where pythonfilename = Python file name trying to execute and filepath = Path trying to Scan
+* **Example:** python3 filetype_summary.py /Volumes
 
 
