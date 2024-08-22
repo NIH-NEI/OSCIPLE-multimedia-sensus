@@ -1,4 +1,4 @@
-### filetype_summary.py
+### Description
 
 Script scans a specified directory and its subdirectories for media files, analyzes them based on their file types, and generates a summary report in CSV format.
 
@@ -10,10 +10,13 @@ The summary report includes the following columns:
 
 The output CSV file is named '{IC}-SummSummary.csv' and is saved in the current working directory.
 
-To execute the file please use the following command based on OS.
+### To execute the file please use the following command based on OS.
 
-### MACOS
+## MACOS
 
-* python3 {pythonfilename} {filepath} (i.e. python3 filetype_summary.py /Volumes)
+* python3 {pythonfilename} {filepath} 
+	* pythonfilename = Python file name trying to execute
+	* filepath = Path trying to Scan
+* Command to run: python3 filetype_summary.py /Volumes
 
 
