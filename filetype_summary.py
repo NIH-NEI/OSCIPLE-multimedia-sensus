@@ -3,8 +3,7 @@ from threading import Thread
 
 
 """
-1. Creates a Summary File with a list of Extension, #Number Of Files, Drive and Total Size
-2. Returns a list object which contains array of file list if there was a duplicate file name in the directory
+Creates a Summary File with a list of Extension, #Number Of Files, Drive and Total Size
 """
 
 class filetypeSummary:
