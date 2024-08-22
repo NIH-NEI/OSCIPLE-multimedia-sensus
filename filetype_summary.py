@@ -48,8 +48,7 @@ class filetypeSummary:
 
 					ext = os.path.splitext(file)[1].lower()
 					path = os.path.join(root, file)
-					parts = path.split('/')
-					filename = file
+					parts = path.split(os.path.sep)
 
 					if self.filecount >= self.skipUntil:
 						# skip system files and other unlikely-to-be-useful stuff that tends to make the results enormous
