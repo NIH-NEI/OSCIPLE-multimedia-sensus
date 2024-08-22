@@ -23,6 +23,11 @@ class filetypeSummary:
 
 		# Get the current date
 		now = datetime.datetime.now()
+		month = now.strftime("%m")  # Get month as two-digit number
+		year = now.strftime("%Y")   # Get year as four-digit number
+
+		# Join month and year
+		month_year = f"{month}-{year}"
 		
 		print ("{filepath} scan started at {datetime}".format(filepath=filepath, datetime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 		fileextensions = {}
@@ -80,12 +85,9 @@ class filetypeSummary:
 		# Generating Summary File CSV	
 		with open(listpath, "a", newline='') as tehfile:
 			writer = csv.writer(tehfile)
-
-			# Write the Header Row
-			writer.writerow(["FileType", "Count", "Size", "Drive", "LastScanned"])
 			
 			for ext, count in fileextensions.items():
-				writer.writerow([count["ext"], count["count"], count["filesize"], count["directory"], now.month + "-" + now.year])
+				writer.writerow([count["ext"], count["count"], count["filesize"], count["directory"], month_year])
 	
 		print ("{filepath} scan ended at {datetime}.  Total runtime: {rt}s  Total hashbuf: {hb}".format(filepath=filepath, datetime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), rt=round(time.time() - self.startTime, 1), hb=0))
   
