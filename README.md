@@ -12,6 +12,8 @@ The output CSV file is named '{IC}-Summary.csv' and is saved in the current work
 
 ### To run a scan, please use the following command.
 
+* Update Line Number 20 to have your IC name in file filetype_summary.py
+
 ## MACOS
 
 * Map Network Drive
